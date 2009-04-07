@@ -24,16 +24,18 @@ if (AllRuleNames = "ERROR")
 {
 	AllRuleNames=
 }
-ConfirmAction := true
 
+;main execution loop
 Loop
 {
 	;msgbox, running
+	;Loops through all the rule names for execution
 	Loop, Parse, AllRuleNames, |
 	{
 		thisRule = %A_LoopField%
 		;msgbox, %thisrule%
 		NumOfRules := 1
+		;Loops to determine number of subjects within a rule
 		Loop
 		{
 			IniRead, MultiRule, rules.ini, %thisRule%, Subject%A_Index%
@@ -52,10 +54,18 @@ Loop
 		}
 		;msgbox, %thisRule% has %Numofrules% rules
 		IniRead, Folder, rules.ini, %thisRule%, Folder
+		IniRead, Enabled, rules.ini, %thisRule%, Enabled
 		IniRead, Action, rules.ini, %thisRule%, Action
 		IniRead, Destination, rules.ini, %thisRule%, Destination, 0
 		IniRead, Matches, rules.ini, %thisRule%, Matches
-
+		
+		;If rule is not enabled, just skip over it
+		if (Enabled = 0)
+		{
+			continue
+		}
+		MsgBox, %thisRule% is currently running
+		;Loop to read the subjects, verbs and objects for the list defined
 		Loop
 		{
 			if ((A_Index-1) = NumOfRules)
@@ -79,8 +89,8 @@ Loop
 		{
 			IniRead, Overwrite, rules.ini, %thisRule%, Overwrite
 		}
-		;IniRead, ConfirmAction, rules.ini, %thisRule%, ConfirmAction, false
-		;Msgbox, %Subject% %Verb% %Object% %Action%
+		IniRead, ConfirmAction, rules.ini, %thisRule%, ConfirmAction, 0
+		;Msgbox, %Subject% %Verb% %Object% %Action% %ConfirmAction%
 
 		Loop %Folder%
 		{
@@ -108,7 +118,7 @@ Loop
 				if (Subject%RuleNum% = "Name")
 				{
 					thisSubject := getName(file)
-					;msgbox, name
+					;msgbox, %thisSubject%
 				}
 				else if (Subject%RuleNum% = "Extension")
 				{
@@ -238,10 +248,10 @@ Loop
 			;Msgbox, result is %result%
 			if result
 			{
-				;if ConfirmAction
-				;{
-					;MsgBox, Are you sure you want to %Action% %fileName% because of %thisRule% and %result%?
-				;}
+				if (ConfirmAction = 1)
+				{
+					MsgBox, Are you sure you want to %Action% %fileName% because of rule %thisRule%?
+				}
 				if (Action = "Move file") or (Action = "Rename file")
 				{
 					move(file, Destination, Overwrite)

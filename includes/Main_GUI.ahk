@@ -147,6 +147,8 @@ AddRule:
 	Gui, 2: Add, Text, x52 y32 h20 , Folder: %ActiveFolder%
 	Gui, 2: Add, Text, x32 y62 w60 h20 , Description:
 	Gui, 2: Add, Edit, x92 y62 w250 h20 vRuleName , 
+	Gui, 2: Add, Checkbox, x372 y32 vConfirmAction, Confirm Action?
+	Gui, 2: Add, Checkbox, x372 y62 vEnabled, Enabled?
 	Gui, 2: Add, Text, x32 y92 w520 h20 , __________________________________________________________________________________________
 	Gui, 2: Add, Text, x32 y122 w10 h20 , If
 	Gui, 2: Add, DropDownList, x45 y120 w46 h20 r2 vMatches , ALL||ANY
@@ -207,12 +209,16 @@ Edit := 1
 	IniRead, Action, rules.ini, %ActiveRule%, Action
 	IniRead, Destination, rules.ini, %ActiveRule%, Destination, 0
 	IniRead, Matches, rules.ini, %ActiveRule%, Matches
+	IniRead, Enabled, rules.ini, %ActiveRule%, Enabled
+	IniRead, ConfirmAction, rules.ini, %ActiveRule%, ConfirmAction
 	Gui, 2: Destroy
 	Gui, 2: +owner1
 	Gui, 2: +toolwindow
 	Gui, 2: Add, Text, x52 y32 h20 , Folder: %ActiveFolder%
 	Gui, 2: Add, Text, x32 y62 w60 h20 , Description:
 	Gui, 2: Add, Edit, x92 y62 w250 h20 vRuleName , %ActiveRule%
+	Gui, 2: Add, Checkbox, x372 y32 Checked%ConfirmAction% vConfirmAction, Confirm Action?
+	Gui, 2: Add, Checkbox, x372 y62 Checked%Enabled% vEnabled, Enabled?
 	Gui, 2: Add, Text, x32 y92 w520 h20 , __________________________________________________________________________________________
 	Gui, 2: Add, Text, x32 y122 w10 h20 , If
 	StringReplace, thisMatchList, MatchList, %Matches%, %Matches%|
@@ -547,6 +553,8 @@ SaveRule:
 	IniWrite, %RuleNames%%RuleName%|, rules.ini, %ActiveFolder%, RuleNames
 	IniWrite, %AllRuleNames%%RuleName%|, rules.ini, Rules, AllRuleNames
 	IniWrite, %ActiveFolder%\*, rules.ini, %RuleName%, Folder
+	IniWrite, %Enabled%, rules.ini, %RuleName%, Enabled
+	IniWrite, %ConfirmAction%, rules.ini, %RuleName%, ConfirmAction
 	IniWrite, %Matches%, rules.ini, %RuleName%, Matches
 	IniWrite, %GUIAction%, rules.ini, %RuleName%, Action
 	IniWrite, %GUIDestination%, rules.ini, %RuleName%, Destination
