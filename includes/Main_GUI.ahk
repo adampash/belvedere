@@ -1,5 +1,6 @@
 MANAGE:
 	Gui, 1: Destroy
+	Gui, 1: Menu, MenuBar
 	Gui, 1: Add, ListView, NoSortHdr x62 y52 w175 h310 vFolders gListRules,Folders|Path
 	ListFolders := SubStr(Folders, 1, -1)
 	if (ListFolders != "ERROR")

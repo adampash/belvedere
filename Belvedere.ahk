@@ -16,6 +16,7 @@ StringCaseSense, On
 SetFormat, float, 0.2
 GoSub, SetVars
 GoSub, TRAYMENU
+GoSub, MENUBAR
 Gosub, BuildINI
 IniRead, Folders, rules.ini, Folders, Folders
 IniRead, FolderNames, rules.ini, Folders, FolderNames
@@ -64,7 +65,7 @@ Loop
 		{
 			continue
 		}
-		MsgBox, %thisRule% is currently running
+		;MsgBox, %thisRule% is currently running
 		;Loop to read the subjects, verbs and objects for the list defined
 		Loop
 		{
@@ -250,7 +251,9 @@ Loop
 			{
 				if (ConfirmAction = 1)
 				{
-					MsgBox, Are you sure you want to %Action% %fileName% because of rule %thisRule%?
+					MsgBox, 4, Action Confirmation, Are you sure you want to %Action% %fileName% because of rule %thisRule%?
+					IfMsgBox No
+						break
 				}
 				if (Action = "Move file") or (Action = "Rename file")
 				{
@@ -350,6 +353,13 @@ Menu,TRAY,Add,&About...,ABOUT
 Menu,TRAY,Add,E&xit,EXIT
 Menu,Tray,Tip,%APPNAME% %Version%
 ;Menu,TRAY,Icon,resources\tk.ico
+Return
+
+MENUBAR:
+Menu, FileMenu, Add,E&xit,EXIT
+Menu, HelpMenu, Add,&About Belvedere,ABOUT
+Menu, MenuBar, Add, &File, :FileMenu
+Menu, MenuBar, Add, &Help, :HelpMenu
 Return
 
 PREFS:
