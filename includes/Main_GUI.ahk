@@ -95,6 +95,9 @@ RemoveFolder:
 		Msgbox, Select the folder you'd like to delete.
 		return
 	}
+	MsgBox, 4, Delete Folder, Are you sure you would like to delete the folder "%ActiveFolder%" ?
+	IfMsgBox No
+		return
 	Gui, 1: Default
 	Gui, ListView, Folders
 	LV_GetText(RemoveFolder, CurrentlySelected, 2)
@@ -122,6 +125,7 @@ RemoveFolder:
 		SplitPath, A_LoopField, FileName
 		LV_Add(0, FileName, A_LoopField)
 	}
+	Gosub, ListRules
 return
 
 AddRule:
@@ -447,6 +451,9 @@ RemoveRule:
 		MsgBox, Please select a rule to delete.
 		return
 	}
+	MsgBox, 4, Delete Rule, Are you sure you would like to delete the rule "%ActiveRule%" ?
+	IfMsgBox No
+		return
 	StringReplace, RuleNames, RuleNames, %ActiveRule%|,,
 	Iniwrite, %RuleNames%, rules.ini, %ActiveFolder%, RuleNames
 	StringReplace, AllRuleNames, AllRuleNames, %ActiveRule%|,,
