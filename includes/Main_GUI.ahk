@@ -32,9 +32,7 @@ MANAGE:
 	Gui, 1: Add, Text, x62 y62 w60 h20 , Sleeptime:
 	Gui, 1: Add, Edit, x120 y60 w100 h20 Number vSleep, %Sleep%
 	Gui, 1: Add, Text, x225 y62, (Time in miliseconds)
-	;Gui, 1: Add, Text, x62 y92, Recursive Searches?
-	;Gui, 1: Add, Radio, x180 y92 vRecursiveY, Yes
-	;Gui, 1: Add, Radio, vRecursiveN, No
+
 	Gui, 1: Add, Button, x62 y382 h30 vSavePrefs gSavePrefs, Save Preferences
 	
 	Gui, 1: Show, h443 w724, %APPNAME% Rules
@@ -161,8 +159,10 @@ AddRule:
 	Gui, 2: Add, Text, x52 y32 h20 , Folder: %ActiveFolder%
 	Gui, 2: Add, Text, x32 y62 w60 h20 , Description:
 	Gui, 2: Add, Edit, x92 y62 w250 h20 vRuleName , 
-	Gui, 2: Add, Checkbox, x372 y32 vConfirmAction, Confirm Action?
-	Gui, 2: Add, Checkbox, x372 y62 vEnabled, Enabled?
+	Gui, 2: Add, Checkbox, x448 y30 vEnabled, Enabled
+	Gui, 2: Add, Checkbox, x448 y50 vConfirmAction, Confirm Action
+	Gui, 2: Add, Checkbox, x448 y70 vRecursive, Recursive
+	Gui, 2: Add, Groupbox, x443 y10 w110 h80, Rule Options
 	Gui, 2: Add, Text, x32 y92 w520 h20 , __________________________________________________________________________________________
 	Gui, 2: Add, Text, x32 y122 w10 h20 , If
 	Gui, 2: Add, DropDownList, x45 y120 w46 h20 r2 vMatches , ALL||ANY
@@ -227,14 +227,17 @@ Edit := 1
 	IniRead, Matches, rules.ini, %ActiveRule%, Matches
 	IniRead, Enabled, rules.ini, %ActiveRule%, Enabled
 	IniRead, ConfirmAction, rules.ini, %ActiveRule%, ConfirmAction
+	IniRead, Recursive, rules.ini, %ActiveRule%, Recursive
 	Gui, 2: Destroy
 	Gui, 2: +owner1
 	Gui, 2: +toolwindow
 	Gui, 2: Add, Text, x52 y32 h20 , Folder: %ActiveFolder%
 	Gui, 2: Add, Text, x32 y62 w60 h20 , Description:
 	Gui, 2: Add, Edit, x92 y62 w250 h20 vRuleName , %ActiveRule%
-	Gui, 2: Add, Checkbox, x372 y32 Checked%ConfirmAction% vConfirmAction, Confirm Action?
-	Gui, 2: Add, Checkbox, x372 y62 Checked%Enabled% vEnabled, Enabled?
+	Gui, 2: Add, Checkbox, x448 y30 Checked%Enabled% vEnabled, Enabled
+	Gui, 2: Add, Checkbox, x448 y50 Checked%ConfirmAction% vConfirmAction, Confirm Action
+	Gui, 2: Add, Checkbox, x448 y70 Checked%Recursive% vRecursive, Recursive
+	Gui, 2: Add, Groupbox, x443 y10 w110 h80, Rule Options
 	Gui, 2: Add, Text, x32 y92 w520 h20 , __________________________________________________________________________________________
 	Gui, 2: Add, Text, x32 y122 w10 h20 , If
 	StringReplace, thisMatchList, MatchList, %Matches%, %Matches%|
@@ -577,6 +580,7 @@ SaveRule:
 	IniWrite, %ActiveFolder%\*, rules.ini, %RuleName%, Folder
 	IniWrite, %Enabled%, rules.ini, %RuleName%, Enabled
 	IniWrite, %ConfirmAction%, rules.ini, %RuleName%, ConfirmAction
+	IniWrite, %Recursive%, rules.ini, %RuleName%, Recursive
 	IniWrite, %Matches%, rules.ini, %RuleName%, Matches
 	IniWrite, %GUIAction%, rules.ini, %RuleName%, Action
 	IniWrite, %GUIDestination%, rules.ini, %RuleName%, Destination

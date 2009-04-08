@@ -56,6 +56,8 @@ Loop
 		;msgbox, %thisRule% has %Numofrules% rules
 		IniRead, Folder, rules.ini, %thisRule%, Folder
 		IniRead, Enabled, rules.ini, %thisRule%, Enabled
+		IniRead, ConfirmAction, rules.ini, %thisRule%, ConfirmAction, 0
+		IniRead, Recursive, rules.ini, %thisRule%, Recursive, 0
 		IniRead, Action, rules.ini, %thisRule%, Action
 		IniRead, Destination, rules.ini, %thisRule%, Destination, 0
 		IniRead, Matches, rules.ini, %thisRule%, Matches
@@ -90,10 +92,11 @@ Loop
 		{
 			IniRead, Overwrite, rules.ini, %thisRule%, Overwrite
 		}
-		IniRead, ConfirmAction, rules.ini, %thisRule%, ConfirmAction, 0
-		;Msgbox, %Subject% %Verb% %Object% %Action% %ConfirmAction%
+		
+		;Msgbox, %Subject% %Verb% %Object% %Action% %ConfirmAction% %Recursive%
 
-		Loop %Folder%
+		;Loop through all of the folder contents
+		Loop %Folder%, 0, %Recursive%
 		{
 			Loop
 			{
@@ -337,6 +340,7 @@ BuildINI:
 	{
 		IniWrite,%A_Space%,rules.ini, Folders, Folders
 		IniWrite,%A_Space%,rules.ini, Rules, AllRuleNames
+		IniWrite,300000,rules.ini, Preferences, Sleeptime
 	}
 return
 
