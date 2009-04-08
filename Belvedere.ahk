@@ -357,7 +357,7 @@ Return
 
 MENUBAR:
 Menu, FileMenu, Add,E&xit,EXIT
-Menu, HelpMenu, Add,&About Belvedere,ABOUT
+Menu, HelpMenu, Add,&About %APPNAME%,ABOUT
 Menu, MenuBar, Add, &File, :FileMenu
 Menu, MenuBar, Add, &Help, :HelpMenu
 Return

@@ -166,6 +166,7 @@ AddRule:
 	Gui, 2: Add, Text, x202 y242 h20 w45 vActionTo , to folder:
 	Gui, 2: Add, Edit, x248 y242 w190 h20 vGUIDestination , 
 	Gui, 2: Add, Button, x450 y242 gChooseFolder vGUIChooseFolder h20, ...
+	Gui, 2: Add, Checkbox, x482 y242 vOverwrite, Overwrite?
 	Gui, 2: Add, Button, x32 y302 w100 h30 vTestButton gTESTMatches, Test
 	Gui, 2: Add, Button, x372 y302 w100 h30 vOKButton gSaveRule, OK
 	Gui, 2: Add, Button, x482 y302 w100 h30 vCancelButton gGui2Close, Cancel
@@ -209,6 +210,7 @@ Edit := 1
 	IniRead, Folder, rules.ini, %ActiveRule%, Folder
 	IniRead, Action, rules.ini, %ActiveRule%, Action
 	IniRead, Destination, rules.ini, %ActiveRule%, Destination, 0
+	IniRead, Overwrite, rules.ini, %ActiveRule%, Overwrite
 	IniRead, Matches, rules.ini, %ActiveRule%, Matches
 	IniRead, Enabled, rules.ini, %ActiveRule%, Enabled
 	IniRead, ConfirmAction, rules.ini, %ActiveRule%, ConfirmAction
@@ -315,6 +317,7 @@ Edit := 1
 	Gui, 2: Add, Text, x202 y242 h20 w45 vActionTo , to folder:
 	Gui, 2: Add, Edit, x248 y242 w190 h20 vGUIDestination , %Destination%
 	Gui, 2: Add, Button, x450 y242 gChooseFolder vGUIChooseFolder h20, ...
+	Gui, 2: Add, Checkbox, x482 y242 vOverwrite Checked%Overwrite%, Overwrite?
 	FirstEdit := 1
 	GUIAction = %Action%
 	Gosub, SetDestination
@@ -327,6 +330,7 @@ Edit := 1
 	GuiControl, 2: Move, ActionTo, % "y" (NumOfRules-1) * 30 + 242
 	GuiControl, 2: Move, GUIDestination, % "y" (NumOfRules-1) * 30 + 242
 	GuiControl, 2: Move, GUIChooseFolder,% "y" (NumOfRules-1) * 30 + 242
+	GuiControl, 2: Move, Overwrite, % "y" (NumOfRules-1) * 30 + 242
 	GuiControl, 2: Move, TestButton, % "y" (NumOfRules-1) * 30 + 302
 	GuiControl, 2: Move, OKButton, % "y" (NumOfRules-1) * 30 + 302
 	GuiControl, 2: Move, CancelButton, % "y" (NumOfRules-1) * 30 + 302
@@ -394,6 +398,7 @@ NewLine:
 	GuiControl, 2: Move, ActionTo, % "y" LineNum * 30 + 242
 	GuiControl, 2: Move, GUIDestination, % "y" LineNum * 30 + 242
 	GuiControl, 2: Move, GUIChooseFolder,% "y" LineNum * 30 + 242
+	GuiControl, 2: Move, Overwrite, % "y" LineNum * 30 + 242
 	GuiControl, 2: Move, TestButton, % "y" LineNum * 30 + 302
 	GuiControl, 2: Move, OKButton, % "y" LineNum * 30 + 302
 	GuiControl, 2: Move, CancelButton, % "y" LineNum * 30 + 302
@@ -435,6 +440,7 @@ SetDestination:
 		GuiControl, 2: Show, GUIChooseFolder
 		GuiControl, 2: , ActionTo, to folder:
 		GuiControl, 2: Show, ActionTo
+		GuiControl, 2: Show, Overwrite
 	}
 	else if (GUIAction = "Rename file")
 	{
@@ -442,12 +448,14 @@ SetDestination:
 		GuiControl, 2: Show, ActionTo
 		GuiControl, 2: Show, GUIDestination
 		GuiControl, 2: Hide, GUIChooseFolder
+		GuiControl, 2: Hide, Overwrite
 	}
 	else if (GUIAction = "Open file") or (GUIAction = "Delete file") or (GUIAction = "Send file to Recycle Bin")
 	{
 		GuiControl, 2: Hide, ActionTo
 		GuiControl, 2: Hide, GUIChooseFolder
 		GuiControl, 2: Hide, GUIDestination
+		GuiControl, 2: Hide, Overwrite
 	}
 return
 
@@ -559,6 +567,7 @@ SaveRule:
 	IniWrite, %Matches%, rules.ini, %RuleName%, Matches
 	IniWrite, %GUIAction%, rules.ini, %RuleName%, Action
 	IniWrite, %GUIDestination%, rules.ini, %RuleName%, Destination
+	IniWrite, %Overwrite%, rules.ini, %RuleName%, Overwrite
 	Loop
 	{
 		if (A_Index = 1)
