@@ -1,6 +1,10 @@
 MANAGE:
 	Gui, 1: Destroy
+	Gui, Add, Tab2, w700 h425 , Folders|Settings
 	Gui, 1: Menu, MenuBar
+	
+	;Items found of First Tab
+	Gui, Tab, 1
 	Gui, 1: Add, ListView, NoSortHdr x62 y52 w175 h310 vFolders gListRules,Folders|Path
 	ListFolders := SubStr(Folders, 1, -1)
 	if (ListFolders != "ERROR")
@@ -14,16 +18,25 @@ MANAGE:
 		LV_ModifyCol(2, 0)
 	}
 	;LV_Modify(0, "Icons")
-	;Gui, 1: Add, Text, x62 y52 w90 h20 , Folder
 	Gui, 1: Add, ListView, NoSortHdr x252 y52 w410 h310 vRules gSetActive,Rules
-	;Gui, 1: Add, Text, x252 y52 w110 h20 , Rules
 	Gui, 1: Add, Button, x62 y382 w30 h30 gAddFolder, +
 	Gui, 1: Add, Button, x92 y382 w30 h30 gRemoveFolder, -
 	Gui, 1: Add, Button, x252 y382 w30 h30 gAddRule, +
 	Gui, 1: Add, Button, x282 y382 w30 h30 gRemoveRule, -
 	Gui, 1: Add, Button, x312 y382 h30 vEditRule gEditRule, Edit Rule
-	;Gui, 1: Add, Button, x312 y382 w50 h30 gEditrule, Edit ; will implement in 0.2
 	; Generated using SmartGUI Creator 4.0
+	
+	;Items found on Second Tab
+	IniRead, Sleep, rules.ini, Preferences, Sleeptime
+	Gui, Tab, 2
+	Gui, 1: Add, Text, x62 y62 w60 h20 , Sleeptime:
+	Gui, 1: Add, Edit, x120 y60 w100 h20 Number vSleep, %Sleep%
+	Gui, 1: Add, Text, x225 y62, (Time in miliseconds)
+	;Gui, 1: Add, Text, x62 y92, Recursive Searches?
+	;Gui, 1: Add, Radio, x180 y92 vRecursiveY, Yes
+	;Gui, 1: Add, Radio, vRecursiveN, No
+	Gui, 1: Add, Button, x62 y382 h30 vSavePrefs gSavePrefs, Save Preferences
+	
 	Gui, 1: Show, h443 w724, %APPNAME% Rules
 Return
 
@@ -910,6 +923,13 @@ return
 ChooseFolder:
 	FileSelectFolder, GUIDestination
 	GuiControl, 2:, GUIDestination, %GUIDestination%
+return
+
+SavePrefs:
+	Gui, 1: Submit, NoHide
+	SleepTime := Sleep
+	IniWrite, %Sleep%, rules.ini, Preferences, Sleeptime
+	MsgBox,,Saved Settings, Your settings have been saved.
 return
 
 #IfWinActive, Belvedere Rules

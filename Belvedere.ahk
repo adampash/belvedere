@@ -321,7 +321,6 @@ NoDefaultSizeUnits = MB|KB|
 DateUnits = minutes||hours|days|weeks
 NoDefaultDateUnits = minutes|hours|days|weeks|
 MatchList = ALL|ANY|
-SleepTime := 300000
 IfNotExist,resources
 {
 	FileCreateDir,resources
