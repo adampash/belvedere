@@ -24,14 +24,16 @@
 	x Check for existing folders before attempting to move or copy
 	x Set matchlist for OR stringing of Name and Extension conditions... e.g., Extension matches on of png,jpg,gif
 	x Fix saving bug detailed here: http://lifehacker.com/341950/belvedere-automates-your-self+cleaning-pc#c4044294
+
+Added Features not yet in release:
+	- Enable/Disable rules with UI checkboxes
+	- Recurse subdirectories
+	- Option to overwrite or not when moving or copying files (may need a bt more testing)
 	
 Maybe features:
  	- Multiple Actions (e.g., copy twice, copy and move, etc.) (moved to 0.3)
 	- Trash management tab a la Hazel (i.e., Keep Recycle Bin size under X GB)
 	- Import media to iTunes
-	- Enable/Disable rules with UI checkboxes
-	- Recurse subdirectories
-	- Option to overwrite or not when moving or copying files
 	- Multiple Actions/Results
 	- Action, Action1, etc, break loop when IniRead reads ERROR
 	- Update GUI to allow for multiple actions
