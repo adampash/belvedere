@@ -17,13 +17,14 @@ MANAGE:
 		LV_ModifyCol(1, 171)
 		LV_ModifyCol(2, 0)
 	}
-	;LV_Modify(0, "Icons")
-	Gui, 1: Add, ListView, NoSortHdr x252 y52 w410 h310 vRules gSetActive,Rules
+
+	Gui, 1: Add, ListView, NoSortHdr x252 y52 w410 h310 vRules gSetActive, Enabled|Rules
 	Gui, 1: Add, Button, x62 y382 w30 h30 gAddFolder, +
 	Gui, 1: Add, Button, x92 y382 w30 h30 gRemoveFolder, -
 	Gui, 1: Add, Button, x252 y382 w30 h30 gAddRule, +
 	Gui, 1: Add, Button, x282 y382 w30 h30 gRemoveRule, -
 	Gui, 1: Add, Button, x312 y382 h30 vEditRule gEditRule, Edit Rule
+	Gui, 1: Add, Button, x620 y382 h30 vEnableButton gEnableButton, Enable
 	; Generated using SmartGUI Creator 4.0
 	
 	;Items found on Second Tab
@@ -32,7 +33,6 @@ MANAGE:
 	Gui, 1: Add, Text, x62 y62 w60 h20 , Sleeptime:
 	Gui, 1: Add, Edit, x120 y60 w100 h20 Number vSleep, %Sleep%
 	Gui, 1: Add, Text, x225 y62, (Time in miliseconds)
-
 	Gui, 1: Add, Button, x62 y382 h30 vSavePrefs gSavePrefs, Save Preferences
 	
 	Gui, 1: Show, h443 w724, %APPNAME% Rules
@@ -44,20 +44,17 @@ GuiClose:
 return
 
 ListRules:
-;msgbox, %Activefolder%
-;if (A_GuiEvent != "ColClick") AND (A_GuiEvent != "I") AND (A_GuiEvent != "f")
-;{
-ActiveRule=
-Gui, 1:Default
-Gui, 1: ListView, Rules
-LV_Delete()
-if (A_EventInfo != 0)
-{
-	;msgbox, %a_eventinfo%
-	Gui, 1: ListView, Folders
-	LV_GetText(ActiveFolder, A_EventInfo, 2)
-	CurrentlySelected = %A_eventinfo%
-}
+	ActiveRule=
+	Gui, 1:Default
+	Gui, 1: ListView, Rules
+	LV_Delete()
+	if (A_EventInfo != 0)
+	{
+		;msgbox, %a_eventinfo%
+		Gui, 1: ListView, Folders
+		LV_GetText(ActiveFolder, A_EventInfo, 2)
+		CurrentlySelected = %A_eventinfo%
+	}
 	;msgbox, % text
 	;msgbox, %activefolder%
 	IniRead, RuleNames, rules.ini, %ActiveFolder%, RuleNames
@@ -73,13 +70,58 @@ if (A_EventInfo != 0)
 	;msgbox, %listrules%
 	Loop, Parse, ListRules, |
 	{
-		LV_Add(0, A_LoopField)
+		IniRead, Enabled, rules.ini, %A_LoopField%, Enabled
+
+		if (Enabled = 1)
+			LV_Add(0,"Yes", A_LoopField)
+		else
+			LV_Add(0,"No", A_LoopField)
 	}
 return
 
 SetActive:
 	Gui, ListView, Rules
-	LV_GetText(ActiveRule, A_EventInfo, 1)
+
+	;Blank out ActiveRule if we get the column headings
+	if (A_EventInfo = 0)
+	{
+		ActiveRule =
+	}
+	else 
+	{
+		LV_GetText(ActiveRule, A_EventInfo, 2)
+	}
+	
+	;Change the button based on the selected rule's enable status
+	IniRead, Enabled, rules.ini, %ActiveRule%, Enabled
+	If (Enabled = 1)
+	{
+		GuiControl, 1:, EnableButton, Disable
+	}
+	else
+	{
+		GuiControl, 1:, EnableButton, Enable
+	}
+return
+
+EnableButton:
+	; make sure a rule is selected
+	if (ActiveRule = "")
+	{
+		MsgBox, Please select a rule to enable/disable.
+		return
+	}
+
+	IniRead, Enabled, rules.ini, %ActiveRule%, Enabled
+	If (Enabled = 1)
+	{
+		IniWrite, 0, rules.ini, %ActiveRule%, Enabled
+	}
+	else
+	{
+		IniWrite, 1, rules.ini, %ActiveRule%, Enabled
+	}
+	Gosub, ListRules
 return
 
 AddFolder:
@@ -190,19 +232,21 @@ AddRule:
 Return
 
 EditRule:
-; Work on section below to add Edit functionality to rules
-;	if (A_GuiControl = "Edit")
-;	{
-Skip = 
-Edit := 1
-; make sure a rule is selected
+	; Work on section below to add Edit functionality to rules
+	;	if (A_GuiControl = "Edit")
+	;	{
+	Skip = 
+	Edit := 1
+	
+	;make sure a rule is selected
 	if (ActiveRule = "")
 	{
 		MsgBox, Please select a rule to edit.
 		return
 	}
 	OldName = %ActiveRule%
-; find out how many conditions a rule has
+	
+	;find out how many conditions a rule has
 	NumOfRules := 1
 	Loop 
 	{
@@ -218,7 +262,8 @@ Edit := 1
 	}
 	;msgbox, %numofrules%
 	;return
-;;;;;;;;;;;;;;;;;;;;;;;; TK Start HERE to complete the editing rule features	
+	
+	;TK Start HERE to complete the editing rule features	
 	;msgbox, %thisRule% has %Numofrules% rules
 	IniRead, Folder, rules.ini, %ActiveRule%, Folder
 	IniRead, Action, rules.ini, %ActiveRule%, Action
@@ -394,7 +439,7 @@ SetVerbList:
 return
 
 NewLine:
-;	msgbox add a new line?!
+	;msgbox add a new line?!
 	if (LineNum = "")
 	{
 		LineNum := 1
