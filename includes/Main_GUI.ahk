@@ -32,7 +32,7 @@ MANAGE:
 	Gui, Tab, 2
 	Gui, 1: Add, Text, x62 y62 w60 h20 , Sleeptime:
 	Gui, 1: Add, Edit, x120 y60 w100 h20 Number vSleep, %Sleep%
-	Gui, 1: Add, Text, x225 y62, (Time in miliseconds)
+	Gui, 1: Add, Text, x225 y62, (Time in milliseconds)
 	Gui, 1: Add, Button, x62 y382 h30 vSavePrefs gSavePrefs, Save Preferences
 	
 	Gui, 1: Show, h443 w724, %APPNAME% Rules
@@ -63,7 +63,7 @@ ListRules:
 	{
 		RuleNames =
 	}
-	;GuiControl, 1:, Rules, |%RuleNames%
+
 	Gui, 1: ListView, Rules
 	LV_Delete()
 	ListRules := SubStr(RuleNames, 1, -1)
@@ -139,7 +139,6 @@ AddFolder:
 		SplitPath, A_LoopField, FileName
 		LV_Add(0, FileName, A_LoopField)
 	}
-	;GuiControl, 1:, Folders, |%Folders%
 	Gosub, RefreshVars
 return
 
@@ -173,7 +172,6 @@ RemoveFolder:
 	Gosub, RefreshVars
 
 	;msgbox, %success%
-	;return
 	Loop, Parse, Folders, |
 	{
 		SplitPath, A_LoopField, FileName
@@ -215,7 +213,6 @@ AddRule:
 	Gui, 2: Add, DropDownList, x445 y152 vGUIUnits w60 ,
 	GuiControl, 2: Hide, GUIUnits
 	Gui, 2: Add, Button, vGUINewLine x515 y152 w20 h20 gNewLine , +
-	;Gui, 2: Add, Button, vGUIRemLine x535 y152 w20 h20 gRemLine , -
 	Gui, 2: Add, Text, x32 y212 w260 h20 vConsequence , Do the following:
 	Gui, 2: Add, DropDownList, x32 y242 w160 h20 vGUIAction gSetDestination r6 , %AllActions%
 	Gui, 2: Add, Text, x202 y242 h20 w45 vActionTo , to folder:
@@ -232,9 +229,6 @@ AddRule:
 Return
 
 EditRule:
-	; Work on section below to add Edit functionality to rules
-	;	if (A_GuiControl = "Edit")
-	;	{
 	Skip = 
 	Edit := 1
 	
@@ -261,7 +255,6 @@ EditRule:
 		}
 	}
 	;msgbox, %numofrules%
-	;return
 	
 	;TK Start HERE to complete the editing rule features	
 	;msgbox, %thisRule% has %Numofrules% rules
@@ -288,6 +281,7 @@ EditRule:
 	StringReplace, thisMatchList, MatchList, %Matches%, %Matches%|
 	Gui, 2: Add, DropDownList, x45 y120 w46 h20 r2 vMatches , %thisMatchList%
 	Gui, 2: Add, Text, x96 y122 w240 h20 , of the following conditions are met:
+	
 	; this loop creates the controls for all of the conditions in the rule
 	height =
 	LineNum =
@@ -464,7 +458,7 @@ NewLine:
 	GuiControl, 2: Move, OKButton, % "y" LineNum * 30 + 302
 	GuiControl, 2: Move, CancelButton, % "y" LineNum * 30 + 302
 	Gui, 2: Show, % "h" LineNum * 30 + 348
-	;%
+
 	LineNum++
 	NumOfRules++
 return
@@ -788,185 +782,174 @@ TESTMatches:
 			;msgbox, %folder%
 			;msgbox, %matches%
 			;msgbox % object%thisLine%
-
-;			IniWrite, % GUISubject%thisLine%, rules.ini, %RuleName%, Subject%RuleNum%
-;			IniWrite, % GUIVerb%thisLine%, rules.ini, %RuleName%, Verb%RuleNum%
-;			IniWrite, % GUIObject%thisLine%, rules.ini, %RuleName%, Object%RuleNum%
-;			IniWrite, % GUIUnits%thisLine%, rules.ini, %RuleName%, Units%RuleNum%
-
-;			IniWrite, %RuleNames%%RuleName%|, rules.ini, %ActiveFolder%, RuleNames
-;			IniWrite, %AllRuleNames%%RuleName%|, rules.ini, Rules, AllRuleNames
-;			IniWrite, %ActiveFolder%\*, rules.ini, %RuleName%, Folder
-;			IniWrite, %Matches%, rules.ini, %RuleName%, Matches
-;			IniWrite, %GUIAction%, rules.ini, %RuleName%, Action
-;			IniWrite, %GUIDestination%, rules.ini, %RuleName%, Destination
 		}
 	}
+	
 	; Now loop through the folder to test for matches
-		Loop %Folder%
+	Loop %Folder%
+	{
+		Loop
 		{
-			Loop
+			if ((A_Index - 1) = NumOfRules)
 			{
-				if ((A_Index - 1) = NumOfRules)
+				break
+			}
+			if (A_Index = 1)
+			{
+				RuleNum =
+			}
+			else
+			{
+				RuleNum := A_Index - 1
+			}
+			;msgbox, % subject subject1 subject2
+			file = %A_LoopFileLongPath%
+			;MsgBox, %file%
+			fileName = %A_LoopFileName%
+			;msgbox, % subject%rulenum%
+			; Below determines the subject of the comparison
+			if (Subject%RuleNum% = "Name")
+			{
+				thisSubject := getName(file)
+				;msgbox, name %file%
+			}
+			else if (Subject%RuleNum% = "Extension")
+			{
+				thisSubject := getExtension(file)
+				;Msgbox, extension: %thissubject%
+			}
+			else if (Subject%RuleNum% = "Size")
+			{
+				thisSubject := getSize(file)
+				;msgbox, size %thissubject%
+			}
+			else if (Subject%RuleNum% = "Date last modified")
+			{
+				thisSubject := getDateLastModified(file)
+			}
+			else if (Subject%RuleNum% = "Date last opened")
+			{
+				thisSubject := getDateLastOpened(file)
+			}
+			else if (Subject%RuleNum% = "Date created")
+			{
+				thisSubject := getDateCreated(file)
+			}
+			else
+			{
+				MsgBox, Subject does not have a match
+				;msgbox, % subject %rulenum%
+			}
+			
+			testUnits = % Units%RuleNum%
+			; Below determines the comparison verb
+			if (Verb%RuleNum% = "contains")
+			{
+				result%RuleNum% := contains(thisSubject, Object%RuleNum%)
+			}
+			else if (Verb%RuleNum% = "does not contain")
+			{
+				result%RuleNum% := !(contains(thisSubject, Object%RuleNum%))
+			}
+			else if (Verb%RuleNum% = "is")
+			{
+				result%RuleNum% := isEqual(thisSubject, Object%RuleNum%)
+			}
+			else if (Verb%RuleNum% = "matches one of")
+			{
+				result%RuleNum% := isOneOf(thisSubject, Object%RuleNum%)
+				;msgbox, % result%rulenum% . "is rule" . rulenum
+			}
+			else if (Verb%RuleNum% = "does not match one of")
+			{
+				result%RuleNum% := !(isOneOf(thisSubject, Object%RuleNum%))
+				;msgbox, % result%rulenum% . "is rule" . rulenum
+			}
+			else if (Verb%RuleNum% = "is less than")
+			{
+				result%RuleNum% := isLessThan(thisSubject, Object%RuleNum%)
+				;msgbox, % result%rulenum%
+			}
+			else if (Verb%RuleNum% = "is greater than")
+			{
+				result%RuleNum% := isGreaterThan(thisSubject, Object%RuleNum%)
+			}
+			else if (Verb%RuleNum% = "is not")
+			{
+				result%RuleNum% := !(isEqual(thisSubject, Object%RuleNum%))
+			}
+			else if (Verb%RuleNum% = "is in the last")
+			{
+				result%RuleNum% := isInTheLast(thisSubject, Object%RuleNum%)
+			}
+			else if (Verb%RuleNum% = "is not in the last")
+			{
+				result%RuleNum% := !(isInTheLast(thisSubject, Object%RuleNum%))
+			}
+		}
+		; Below evaluates result and takes action
+		Loop
+		{
+			;msgbox, %a_index%
+			if (NumOfRules < A_Index)
+			{
+				;msgbox, over
+				break
+			}
+			if (A_Index = 1)
+			{
+				RuleNum=
+			}
+			else
+			{
+				RuleNum := A_Index - 1
+			}
+			;msgbox, % result%rulenum% . "is rule " . rulenum
+			if (Matches = "ALL")
+			{
+				if (result%RuleNum% = 0)
 				{
+					result := 0
 					break
 				}
-				if (A_Index = 1)
-				{
-					RuleNum =
-				}
 				else
 				{
-					RuleNum := A_Index - 1
-				}
-				;msgbox, % subject subject1 subject2
-				file = %A_LoopFileLongPath%
-				;MsgBox, %file%
-				fileName = %A_LoopFileName%
-				;Subject1 = Fart
-				;msgbox, % subject%rulenum%
-				; Below determines the subject of the comparison
-				if (Subject%RuleNum% = "Name")
-				{
-					thisSubject := getName(file)
-					;msgbox, name %file%
-				}
-				else if (Subject%RuleNum% = "Extension")
-				{
-					thisSubject := getExtension(file)
-					;Msgbox, extension: %thissubject%
-				}
-				else if (Subject%RuleNum% = "Size")
-				{
-					thisSubject := getSize(file)
-					;msgbox, size %thissubject%
-				}
-				else if (Subject%RuleNum% = "Date last modified")
-				{
-					thisSubject := getDateLastModified(file)
-				}
-				else if (Subject%RuleNum% = "Date last opened")
-				{
-					thisSubject := getDateLastOpened(file)
-				}
-				else if (Subject%RuleNum% = "Date created")
-				{
-					thisSubject := getDateCreated(file)
-				}
-				else
-				{
-					MsgBox, Subject does not have a match
-					;msgbox, % subject %rulenum%
-				}
-				
-				testUnits = % Units%RuleNum%
-				; Below determines the comparison verb
-				if (Verb%RuleNum% = "contains")
-				{
-					result%RuleNum% := contains(thisSubject, Object%RuleNum%)
-				}
-				else if (Verb%RuleNum% = "does not contain")
-				{
-					result%RuleNum% := !(contains(thisSubject, Object%RuleNum%))
-				}
-				else if (Verb%RuleNum% = "is")
-				{
-					result%RuleNum% := isEqual(thisSubject, Object%RuleNum%)
-				}
-				else if (Verb%RuleNum% = "matches one of")
-				{
-					result%RuleNum% := isOneOf(thisSubject, Object%RuleNum%)
-					;msgbox, % result%rulenum% . "is rule" . rulenum
-				}
-				else if (Verb%RuleNum% = "does not match one of")
-				{
-					result%RuleNum% := !(isOneOf(thisSubject, Object%RuleNum%))
-					;msgbox, % result%rulenum% . "is rule" . rulenum
-				}
-				else if (Verb%RuleNum% = "is less than")
-				{
-					result%RuleNum% := isLessThan(thisSubject, Object%RuleNum%)
-					;msgbox, % result%rulenum%
-				}
-				else if (Verb%RuleNum% = "is greater than")
-				{
-					result%RuleNum% := isGreaterThan(thisSubject, Object%RuleNum%)
-				}
-				else if (Verb%RuleNum% = "is not")
-				{
-					result%RuleNum% := !(isEqual(thisSubject, Object%RuleNum%))
-				}
-				else if (Verb%RuleNum% = "is in the last")
-				{
-					result%RuleNum% := isInTheLast(thisSubject, Object%RuleNum%)
-				}
-				else if (Verb%RuleNum% = "is not in the last")
-				{
-					result%RuleNum% := !(isInTheLast(thisSubject, Object%RuleNum%))
+					result := 1
+					continue
 				}
 			}
-			; Below evaluates result and takes action
-			Loop
+			else if (Matches = "ANY")
 			{
-				;msgbox, %a_index%
-				if (NumOfRules < A_Index)
+				if (result%RuleNum% = 1)
 				{
-					;msgbox, over
+					result := 1
+					;msgbox, 1
 					break
 				}
-				if (A_Index = 1)
-				{
-					RuleNum=
-				}
 				else
 				{
-					RuleNum := A_Index - 1
-				}
-				;msgbox, % result%rulenum% . "is rule " . rulenum
-				if (Matches = "ALL")
-				{
-					if (result%RuleNum% = 0)
-					{
-						result := 0
-						break
-					}
-					else
-					{
-						result := 1
-						continue
-					}
-				}
-				else if (Matches = "ANY")
-				{
-					if (result%RuleNum% = 1)
-					{
-						result := 1
-						;msgbox, 1
-						break
-					}
-					else
-					{
-						result := 0
-						continue
-					}
+					result := 0
+					continue
 				}
 			}
-			;msgbox, %result%
-			;Msgbox, result is %result%
-			if result
-			{
-				;Msgbox, match %fileName%
-				matchFiles = %fileName%, %matchFiles%
-			}
 		}
-		if (matchFiles != "")
+		;msgbox, %result%
+		;Msgbox, result is %result%
+		if result
 		{
-			Msgbox,,Hazel Test Matches, This rule matches the following file(s): `n %matchFiles%
+			;Msgbox, match %fileName%
+			matchFiles = %fileName%, %matchFiles%
 		}
-		else
-		{
-			Msgbox,,Hazel Test Matches, No matches were found
-		}
+	}
+	
+	if (matchFiles != "")
+	{
+		Msgbox,,%APPNAME% Test Matches, This rule matches the following file(s): `n %matchFiles%
+	}
+	else
+	{
+		Msgbox,,%APPNAME% Test Matches, No matches were found
+	}
 return
 
 ChooseFolder:
@@ -983,34 +966,22 @@ return
 
 #IfWinActive, Belvedere Rules
 ~LButton::
-MouseGetPos,,,,ClickedControl
-;msgbox, %ClickedControl%
-if (ClickedControl = "SysListView321") or (ClickedControl = "SysListView322")
-{
-	;msgbox, this one
-	Sleep, 10
-	Click 2
-}
-else
-{
-	;Click
-}
+	MouseGetPos,,,,ClickedControl
+	;msgbox, %ClickedControl%
+	if (ClickedControl = "SysListView321") or (ClickedControl = "SysListView322")
+	{
+		;msgbox, this one
+		Sleep, 10
+		Click 2
+	}
+	else
+	{
+		;Click
+	}
 return
 
-;LButton::
-;Send, {LButton Down}
-;Send, {LButton Up}
-;return
-
-;LButton Up::
-;Click 2
-;Send, {LButton Up}
-;return
-
-#IfWinActive
-
 RefreshVars:
-IniRead, Folders, rules.ini, Folders, Folders
-IniRead, FolderNames, rules.ini, Folders, FolderNames
-IniRead, AllRuleNames, rules.ini, Rules, AllRuleNames
+	IniRead, Folders, rules.ini, Folders, Folders
+	IniRead, FolderNames, rules.ini, Folders, FolderNames
+	IniRead, AllRuleNames, rules.ini, Rules, AllRuleNames
 return

@@ -21,6 +21,7 @@ Gosub, BuildINI
 IniRead, Folders, rules.ini, Folders, Folders
 IniRead, FolderNames, rules.ini, Folders, FolderNames
 IniRead, AllRuleNames, rules.ini, Rules, AllRuleNames
+IniRead, SleepTime, rules.ini, Preferences, SleepTime
 if (AllRuleNames = "ERROR")
 {
 	AllRuleNames=
@@ -302,37 +303,38 @@ Loop
 		}
 	}
 	;msgbox, run
+	MsgBox, %SleepTime%
 	Sleep, %SleepTime%
 }
 
 
 SetVars:
-APPNAME = Belvedere
-Version = 0.3
-AllSubjects = Name||Extension|Size|Date last modified|Date last opened|Date created|
-NoDefaultSubject = Name|Extension|Size|Date last modified|Date last opened|Date created|
-NameVerbs = is||is not|matches one of|does not match one of|contains|does not contain|
-NoDefaultNameVerbs = is|is not|matches one of|does not match one of|contains|does not contain|
-NumVerbs =	is||is not|is greater than|is less than|
-NoDefaultNumVerbs = is|is not|is greater than|is less than|
-DateVerbs = is in the last||is not in the last| ; removed is||is not| for now... needs more work implementing
-NoDefaultDateVerbs = is in the last|is not in the last|
-AllActions = Move file||Rename file|Send file to Recycle Bin|Delete file|Copy file|Open file|
-AllActionsNoDefault = Move file|Rename file|Send file to Recycle Bin|Delete file|Copy file|Open file|
-SizeUnits = MB||KB
-NoDefaultSizeUnits = MB|KB|
-DateUnits = minutes||hours|days|weeks
-NoDefaultDateUnits = minutes|hours|days|weeks|
-MatchList = ALL|ANY|
-IfNotExist,resources
-{
-	FileCreateDir,resources
-}
-FileInstall, resources\belvedere.ico, resources\belvedere.ico
-FileInstall, resources\belvederename.png, resources\belvederename.png
-FileInstall, resources\both.png, resources\both.png
-Menu, TRAY, Icon, resources\belvedere.ico
-BelvederePNG = resources\both.png
+	APPNAME = Belvedere
+	Version = 0.3
+	AllSubjects = Name||Extension|Size|Date last modified|Date last opened|Date created|
+	NoDefaultSubject = Name|Extension|Size|Date last modified|Date last opened|Date created|
+	NameVerbs = is||is not|matches one of|does not match one of|contains|does not contain|
+	NoDefaultNameVerbs = is|is not|matches one of|does not match one of|contains|does not contain|
+	NumVerbs =	is||is not|is greater than|is less than|
+	NoDefaultNumVerbs = is|is not|is greater than|is less than|
+	DateVerbs = is in the last||is not in the last| ; removed is||is not| for now... needs more work implementing
+	NoDefaultDateVerbs = is in the last|is not in the last|
+	AllActions = Move file||Rename file|Send file to Recycle Bin|Delete file|Copy file|Open file|
+	AllActionsNoDefault = Move file|Rename file|Send file to Recycle Bin|Delete file|Copy file|Open file|
+	SizeUnits = MB||KB
+	NoDefaultSizeUnits = MB|KB|
+	DateUnits = minutes||hours|days|weeks
+	NoDefaultDateUnits = minutes|hours|days|weeks|
+	MatchList = ALL|ANY|
+	IfNotExist,resources
+	{
+		FileCreateDir,resources
+	}
+	FileInstall, resources\belvedere.ico, resources\belvedere.ico
+	FileInstall, resources\belvederename.png, resources\belvederename.png
+	FileInstall, resources\both.png, resources\both.png
+	Menu, TRAY, Icon, resources\belvedere.ico
+	BelvederePNG = resources\both.png
 return
 
 BuildINI:
@@ -345,24 +347,24 @@ BuildINI:
 return
 
 TRAYMENU:
-Menu,TRAY,NoStandard 
-Menu,TRAY,DeleteAll 
-Menu, TRAY, Add, &Manage, MANAGE
-Menu, TRAY, Default, &Manage
-;Menu,TRAY,Add,&Preferences,PREFS
-;Menu,TRAY,Add,&Help,HELP
-Menu,TRAY,Add
-Menu,TRAY,Add,&About...,ABOUT
-Menu,TRAY,Add,E&xit,EXIT
-Menu,Tray,Tip,%APPNAME% %Version%
-;Menu,TRAY,Icon,resources\tk.ico
+	Menu,TRAY,NoStandard 
+	Menu,TRAY,DeleteAll 
+	Menu, TRAY, Add, &Manage, MANAGE
+	Menu, TRAY, Default, &Manage
+	;Menu,TRAY,Add,&Preferences,PREFS
+	;Menu,TRAY,Add,&Help,HELP
+	Menu,TRAY,Add
+	Menu,TRAY,Add,&About...,ABOUT
+	Menu,TRAY,Add,E&xit,EXIT
+	Menu,Tray,Tip,%APPNAME% %Version%
+	;Menu,TRAY,Icon,resources\tk.ico
 Return
 
 MENUBAR:
-Menu, FileMenu, Add,E&xit,EXIT
-Menu, HelpMenu, Add,&About %APPNAME%,ABOUT
-Menu, MenuBar, Add, &File, :FileMenu
-Menu, MenuBar, Add, &Help, :HelpMenu
+	Menu, FileMenu, Add,E&xit,EXIT
+	Menu, HelpMenu, Add,&About %APPNAME%,ABOUT
+	Menu, MenuBar, Add, &File, :FileMenu
+	Menu, MenuBar, Add, &Help, :HelpMenu
 Return
 
 PREFS:
@@ -370,31 +372,31 @@ msgbox, tk
 return
 
 HELP:
-msgbox, tk
+	msgbox, tk
 return
 
 HOMEPAGE:
-Run, http://lifehacker.com/341950/
+	Run, http://lifehacker.com/341950/
 return
 
 WCHOMEPAGE:
-Run, http://what-cheer.com/
+	Run, http://what-cheer.com/
 return
 
 ABOUT:
-Gui,4: Destroy
-Gui,4: +owner
-Gui,4: Add,Picture,x45 y0,%BelvederePNG%
-Gui,4: font, s8, Courier New
-Gui,4: Add, Text,x275 y235,%Version%
-Gui,4: font, s9, Arial 
-Gui,4: Add,Text,x10 y250 Center,Belvedere is an automated file managment application`nthat performs actions on files based on user-defined criteria.`nFor example, if a file in your downloads folder`nhasn't been opened in 4 weeks and it's larger than 10MB,`nyou can tell Belvedere to automatically send it to the Recycle Bin.`n`nBelvedere is written by Adam Pash and distributed`nby Lifehacker under the GNU Public License.`nFor details on how to use Belvedere, check out the
-Gui,4:Font,underline bold
-Gui,4:Add,Text,cBlue gHomepage Center x115 y385,Belvedere homepage
-Gui,4:Add,Text,cBlue gWCHomepage Center x105 y400,Icon design by What Cheer
-Gui,4: Color,F8FAF0
-;Gui 2:+Disabled
-Gui,4: Show,auto,About Belvedere
+	Gui,4: Destroy
+	Gui,4: +owner
+	Gui,4: Add,Picture,x45 y0,%BelvederePNG%
+	Gui,4: font, s8, Courier New
+	Gui,4: Add, Text,x275 y235,%Version%
+	Gui,4: font, s9, Arial 
+	Gui,4: Add,Text,x10 y250 Center,Belvedere is an automated file managment application`nthat performs actions on files based on user-defined criteria.`nFor example, if a file in your downloads folder`nhasn't been opened in 4 weeks and it's larger than 10MB,`nyou can tell Belvedere to automatically send it to the Recycle Bin.`n`nBelvedere is written by Adam Pash and distributed`nby Lifehacker under the GNU Public License.`nFor details on how to use Belvedere, check out the
+	Gui,4:Font,underline bold
+	Gui,4:Add,Text,cBlue gHomepage Center x115 y385,Belvedere homepage
+	Gui,4:Add,Text,cBlue gWCHomepage Center x105 y400,Icon design by What Cheer
+	Gui,4: Color,F8FAF0
+	;Gui 2:+Disabled
+	Gui,4: Show,auto,About Belvedere
 Return
 
 #Include includes\verbs.ahk
@@ -403,4 +405,4 @@ Return
 #Include includes\Main_GUI.ahk
 
 EXIT:
-ExitApp
+	ExitApp
