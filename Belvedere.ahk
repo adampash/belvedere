@@ -303,7 +303,6 @@ Loop
 		}
 	}
 	;msgbox, run
-	MsgBox, %SleepTime%
 	Sleep, %SleepTime%
 }
 
@@ -368,7 +367,7 @@ MENUBAR:
 Return
 
 PREFS:
-msgbox, tk
+	msgbox, tk
 return
 
 HELP:

@@ -1,6 +1,6 @@
 MANAGE:
 	Gui, 1: Destroy
-	Gui, Add, Tab2, w700 h425 , Folders|Settings
+	Gui, Add, Tab2, w700 h425 vTabs , Folders|Preferences
 	Gui, 1: Menu, MenuBar
 	
 	;Items found of First Tab
