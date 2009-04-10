@@ -546,7 +546,7 @@ SaveRule:
 		Msgbox, Your description cannot contain the | (pipe) character
 		return
 	}
-	StringReplace, RuleMatchList, RuleNames, |,`,,ALL
+	StringReplace, RuleMatchList, AllRuleNames, |,`,,ALL
 	;msgbox, Edit: %Edit%
 	if RuleName in %RuleMatchList%
 	{

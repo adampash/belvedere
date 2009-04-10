@@ -28,7 +28,12 @@
 Added Features not yet in release:
 	- Enable/Disable rules with UI checkboxes
 	- Recurse subdirectories
-	- Option to overwrite or not when moving or copying files (may need a bt more testing)
+	- Option to overwrite or not when moving or copying files
+	- Added tabbed interface for rules and preferences
+	- Added configurable sleeptime
+	- Added rule and folder deletion confirmation
+	- fixed bug in rule description bug across folders
+	- created application installer
 	
 Maybe features:
  	- Multiple Actions (e.g., copy twice, copy and move, etc.) (moved to 0.3)
@@ -37,3 +42,4 @@ Maybe features:
 	- Multiple Actions/Results
 	- Action, Action1, etc, break loop when IniRead reads ERROR
 	- Update GUI to allow for multiple actions
+	- change rule storage 

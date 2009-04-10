@@ -1,9 +1,16 @@
+;
+; Belvedere Installer Script
+;
+;	Author:		Matthew Shorts <mshorts@gmail.com> 
+;	Version: 	0.1
+;	
+
 ;General Application defines
 !define PRODUCT_NAME "Belvedere"
 !define PRODUCT_VERSION "0.3"
 !define PRODUCT_PUBLISHER "Lifehacker"
 !define PRODUCT_WEB_SITE "http://lifehacker.com/341950/belvedere-automates-your-self+cleaning-pc"
-!define PRODUCT_README "README"
+;!define PRODUCT_README "README"
 !define PRODUCT_DIR_REGKEY "Software\Microsoft\Windows\CurrentVersion\App Paths\${PRODUCT_NAME}.exe"
 !define PRODUCT_UNINST_KEY "Software\Microsoft\Windows\CurrentVersion\Uninstall\${PRODUCT_NAME}"
 !define PRODUCT_UNINST_ROOT_KEY "HKLM"
@@ -18,13 +25,14 @@
 
 ;Finish Page Defines
 !define MUI_FINISHPAGE_RUN "$INSTDIR\${PRODUCT_NAME}.exe"
-!define MUI_FINISHPAGE_SHOWREADME "$INSTDIR\${PRODUCT_README}"
+;!define MUI_FINISHPAGE_SHOWREADME "$INSTDIR\${PRODUCT_README}"
 
 ;Product information
 VIAddVersionKey ProductName "${PRODUCT_NAME}"
 VIAddVersionKey CompanyName "${PRODUCT_PUBLISHER}"
 VIAddVersionKey FileDescription "${PRODUCT_NAME} Installer"
-VIAddVersionKey FileVersion "1.0"
+VIAddVersionKey FileVersion "0.1"
+VIAddVersionKey LegalCopyright ""
 VIAddVersionKey ProductVersion "${PRODUCT_VERSION}"
 VIProductVersion 1.0.0.0
 
@@ -49,7 +57,7 @@ BrandingText "${PRODUCT_NAME} ${PRODUCT_VERSION}"
 ;Welcome page
 !insertmacro MUI_PAGE_WELCOME
 ;License page
-!insertmacro MUI_PAGE_LICENSE "C:\Documents and Settings\mshorts\My Documents\WORK\belvedere\gpl-3.0.txt"
+;!insertmacro MUI_PAGE_LICENSE ".\gpl-3.0.txt"
 ;Directory page
 !insertmacro MUI_PAGE_DIRECTORY
 ;Instfiles page
@@ -73,7 +81,7 @@ Section "Installation" secApp
   SetOutPath "$INSTDIR"
   SetOverwrite ifnewer
   File .\Belvedere.exe
-  File .\README
+  ;File .\README
   CreateDirectory "$SMPROGRAMS\${PRODUCT_NAME}"
   CreateShortCut "$SMPROGRAMS\${PRODUCT_NAME}\${PRODUCT_NAME}.lnk" "$INSTDIR\Belvedere.exe"
   CreateShortCut "$DESKTOP\${PRODUCT_NAME}.lnk" "$INSTDIR\Belvedere.exe"
@@ -114,7 +122,7 @@ FunctionEnd
 Section Uninstall
   Delete "$INSTDIR\${PRODUCT_NAME}.url"
   Delete "$INSTDIR\uninst.exe"
-  Delete "$INSTDIR\${PRODUCT_README}"
+  ;Delete "$INSTDIR\${PRODUCT_README}"
   Delete "$INSTDIR\Belvedere.exe"
   Delete "$INSTDIR\rules.ini"
   Delete "$INSTDIR\resources\both.png"
