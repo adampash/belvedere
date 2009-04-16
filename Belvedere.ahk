@@ -309,7 +309,7 @@ Loop
 
 SetVars:
 	APPNAME = Belvedere
-	Version = 0.3
+	Version = 0.4
 	AllSubjects = Name||Extension|Size|Date last modified|Date last opened|Date created|
 	NoDefaultSubject = Name|Extension|Size|Date last modified|Date last opened|Date created|
 	NameVerbs = is||is not|matches one of|does not match one of|contains|does not contain|
@@ -325,6 +325,7 @@ SetVars:
 	DateUnits = minutes||hours|days|weeks
 	NoDefaultDateUnits = minutes|hours|days|weeks|
 	MatchList = ALL|ANY|
+	DeleteApproach = Oldest First|Youngest First|Largest First|Smallest First
 	IfNotExist,resources
 	{
 		FileCreateDir,resources
@@ -342,6 +343,7 @@ BuildINI:
 		IniWrite,%A_Space%,rules.ini, Folders, Folders
 		IniWrite,%A_Space%,rules.ini, Rules, AllRuleNames
 		IniWrite,300000,rules.ini, Preferences, Sleeptime
+		IniWrite,0,rules.ini, Preferences, RBEnable
 	}
 return
 

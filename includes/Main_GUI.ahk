@@ -1,6 +1,6 @@
 MANAGE:
 	Gui, 1: Destroy
-	Gui, Add, Tab2, w700 h425 vTabs , Folders|Preferences
+	Gui, Add, Tab2, w700 h425 vTabs , Folders|Recycle Bin|Preferences
 	Gui, 1: Menu, MenuBar
 	
 	;Items found of First Tab
@@ -28,8 +28,42 @@ MANAGE:
 	; Generated using SmartGUI Creator 4.0
 	
 	;Items found on Second Tab
-	IniRead, Sleep, rules.ini, Preferences, Sleeptime
+	IniRead, RBEnable, rules.ini, Preferences, RBEnable
+	IniRead, RBManageAge, rules.ini, RecycleBin, RBManageAge
+	IniRead, RBTimeValue, rules.ini, RecycleBin, RBTimeValue, %A_Space%
+	IniRead, RBTimeLength, rules.ini, RecycleBin, RBTimeLength
+	StringReplace, thisTimeLength, NoDefaultDateUnits, %RBTimeLength%, %RBTimeLength%|
+	IniRead, RBManageSize, rules.ini, RecycleBin, RBManageSize
+	IniRead, RBSize, rules.ini, RecycleBin, RBSize, %A_Space%
+	IniRead, RBSizeUnits, rules.ini, RecycleBin, RBSizeUnits
+	StringReplace, thisSizeUnits, NoDefaultSizeUnits, %RBSizeUnits%, %RBSizeUnits%|
+	IniRead, RBDelAppChoice, rules.ini, RecycleBin, RBDelAppChoice
+	StringReplace, thisDelAppChoice, DeleteApproach, %RBDelAppChoice%, %RBDelAppChoice%|
+	IniRead, RBEmpty, rules.ini, RecycleBin, RBEmpty
+	IniRead, RBEmptyTimeValue, rules.ini, RecycleBin, RBEmptyTimeValue, %A_Space%
+	IniRead, RBEmptyTimeLength, rules.ini, RecycleBin, RBEmptyTimeLength
+	StringReplace, thisEmptyTimeLength, NoDefaultDateUnits, %RBEmptyTimeLength%, %RBEmptyTimeLength%|
+	
 	Gui, Tab, 2
+	Gui, 1: Add, Checkbox, x62 y52 w585 vRBEnable gRBEnable Checked%RBEnable%, Allow %APPNAME% to manage my Recycle Bin
+	Gui, 1: Add, Checkbox, x100 y100 vRBManageAge Checked%RBManageAge%, Remove files in my Recycle Bin older than
+	Gui, 1: Add, Edit, x325 y100 w70 h20 vRBTimeValue Number, %RBTimeValue%
+	Gui, 1: Add, DropDownList, x395 y100 w60 vRBTimeLength, %thisTimeLength%
+	Gui, 1: Add, Checkbox, x100 y130 vRBManageSize Checked%RBManageSize%, Keep my Recycle Bin under
+	Gui, 1: Add, Edit, x255 y130 w70 h20 vRBSize Number, %RBSize%
+	Gui, 1: Add, DropDownList, x325 y130 w60 vRBSizeUnits, %thisSizeUnits% 
+	Gui, 1: Add, Text, x150 y160 vRBDelAppText, Deletion Approach: 
+	Gui, 1: Add, DropDownList, x255 y160 w130 vRBDelAppChoice, %thisDelAppChoice%
+	Gui, 1: Add, Checkbox, x100 y190 vRBEmpty Checked%RBEmpty%, Empty my Recycle Bin every
+	Gui, 1: Add, Edit, x255 y190 w70 vRBEmptyTimeValue Number, %RBEmptyTimeValue%
+	Gui, 1: Add, DropDownList, x325 y190 w60 vRBEmptyTimeLength, %thisEmptyTimeLength%
+	Gui, 1: Add, Button, x62 y382 h30 vRBSavePrefs gRBSavePrefs, Save Preferences
+	
+	GoSub, RBEnable ;Need to Enable/Disable the controls based on first checkbox
+	
+	;Items found on Third Tab
+	IniRead, Sleep, rules.ini, Preferences, Sleeptime
+	Gui, Tab, 3
 	Gui, 1: Add, Text, x62 y62 w60 h20 , Sleeptime:
 	Gui, 1: Add, Edit, x120 y60 w100 h20 Number vSleep, %Sleep%
 	Gui, 1: Add, Text, x225 y62, (Time in milliseconds)
@@ -962,6 +996,111 @@ SavePrefs:
 	SleepTime := Sleep
 	IniWrite, %Sleep%, rules.ini, Preferences, Sleeptime
 	MsgBox,,Saved Settings, Your settings have been saved.
+return
+
+RBSavePrefs:
+	Gui, 1: Submit, NoHide
+	IniWrite, %RBEnable%, rules.ini, Preferences, RBEnable
+
+	;Check to see if all boxes are filled properly
+	if( RBEnable = 1 )
+	{
+		;Check time values are chosen if this section is enabled
+		if (RBManageAge = 1)
+		{
+			if( RBTimeValue = "")
+			{
+				MsgBox,,Missing Time Value, Please insert time value
+				return
+			}
+			else if (RBTimeLength = "")
+			{
+				MsgBox,,Missing Time Length, Please select a time length
+				return
+			}
+		}
+		
+		;Check size values are chosen if this section is enabled
+		if (RBManageSize = 1)
+		{
+			if (RBSize = "")
+			{
+				MsgBox,,Missing File Size, Please insert a file size
+				return
+			}
+			else if (RBSizeUnits = "")
+			{
+				MsgBox,,Missing File Size Type, Please select a file size unit type
+				return
+			}
+			else if (RBDelAppChoice = "")
+			{
+				MsgBox,,Missing Deletion Approach, Please select a deletion approach
+				return
+			}
+		}
+		
+		;Check Recycle Bin Empty values are chosen if section is enabled
+		if (RBEmpty = 1)
+		{
+			if (RBEmptyTimeValue = "")
+			{
+				MsgBox,,Missing Empty Time, Please insert a time value to empty the Recycle Bin
+				return
+			}
+			else if (RBEmptyTimeLength = "")
+			{
+				MsgBox,,Missing Empty Time Length, Please select a time value length to empty the Recycle Bin
+				return
+			}
+		}
+	}
+	
+	IniWrite, %RBManageAge%, rules.ini, RecycleBin, RBManageAge
+	IniWrite, %RBTimeValue%, rules.ini, RecycleBin, RBTimeValue
+	IniWrite, %RBTimeLength%, rules.ini, RecycleBin, RBTimeLength
+	IniWrite, %RBManageSize%, rules.ini, RecycleBin, RBManageSize
+	IniWrite, %RBSize%, rules.ini, RecycleBin, RBSize
+	IniWrite, %RBSizeUnits%, rules.ini, RecycleBin, RBSizeUnits
+	IniWrite, %RBDelAppChoice%, rules.ini, RecycleBin, RBDelAppChoice
+	IniWrite, %RBEmpty%, rules.ini, RecycleBin, RBEmpty
+	IniWrite, %RBEmptyTimeValue%, rules.ini, RecycleBin, RBEmptyTimeValue
+	IniWrite, %RBEmptyTimeLength%, rules.ini, RecycleBin, RBEmptyTimeLength
+
+	MsgBox,,Saved Settings, Your settings have been saved.
+return
+
+RBEnable:
+	Gui, 1: Submit, NoHide
+	
+	if (RBEnable = 1)
+	{
+		GuiControl, 1: Enable, RBManageAge
+		GuiControl, 1: Enable, RBTimeValue
+		GuiControl, 1: Enable, RBTimeLength
+		GuiControl, 1: Enable, RBManageSize
+		GuiControl, 1: Enable, RBSize
+		GuiControl, 1: Enable, RBSizeUnits
+		GuiControl, 1: Enable, RBDelAppText
+		GuiControl, 1: Enable, RBDelAppChoice
+		GuiControl, 1: Enable, RBEmpty
+		GuiControl, 1: Enable, RBEmptyTimeValue
+		GuiControl, 1: Enable, RBEmptyTimeLength
+	}
+	else
+	{
+		GuiControl, 1: Disable, RBManageAge
+		GuiControl, 1: Disable, RBTimeValue
+		GuiControl, 1: Disable, RBTimeLength
+		GuiControl, 1: Disable, RBManageSize
+		GuiControl, 1: Disable, RBSize
+		GuiControl, 1: Disable, RBSizeUnits
+		GuiControl, 1: Disable, RBDelAppText
+		GuiControl, 1: Disable, RBDelAppChoice
+		GuiControl, 1: Disable, RBEmpty
+		GuiControl, 1: Disable, RBEmptyTimeValue
+		GuiControl, 1: Disable, RBEmptyTimeLength
+	}
 return
 
 #IfWinActive, Belvedere Rules
