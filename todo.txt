@@ -1,4 +1,3 @@
-
 0.1 Release:
 	x GUI
 	x Actions:
@@ -26,6 +25,7 @@
 	x Fix saving bug detailed here: http://lifehacker.com/341950/belvedere-automates-your-self+cleaning-pc#c4044294
 
 Added Features not yet in release:
+        *- Remove Autohotkey scripts, so that Antivirus doesn't flag them as trojans
 	- Enable/Disable rules with UI checkboxes
 	- Recurse subdirectories
 	- Option to overwrite or not when moving or copying files
